@@ -8,6 +8,13 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Data::OleDb;
 using namespace cliext;
+/*—татический класс авторизованного пользовател€*/
+static ref class User
+{
+public:
+	static String^ login;
+	static String^ accessCode;
+};
 /* ласс сотрудника, работающего с приложением*/
 ref class Employee
 {
@@ -170,4 +177,3 @@ public:
 		dbTables->Close();
 	};
 };
-
