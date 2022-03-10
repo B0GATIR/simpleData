@@ -14,7 +14,7 @@ ref class Employee
 private:
 	String^ login; //Логин сотрулника
 	String^ timeIn; //Время авторизации
-	String^ DataIn; //Дата авторизации
+	String^ dataIn; //Дата авторизации
 	String^ timeOut; //Время прекращения работы
 	String^ accessCode; //Код доступа
 public:
@@ -30,7 +30,14 @@ public:
 		String^ min = ltm.tm_min < 10 ? "0" + ltm.tm_min : Convert::ToString(ltm.tm_min);
 		String^ hour = ltm.tm_hour < 10 ? "0" + ltm.tm_hour : Convert::ToString(ltm.tm_hour);
 		timeIn = hour + ":" + min;
-		DataIn = Convert::ToString(ltm.tm_mday) + "." + Convert::ToString(ltm.tm_mon + 1) + "." + Convert::ToString(ltm.tm_year + 1900);
+		dataIn = Convert::ToString(ltm.tm_mday) + "." + Convert::ToString(ltm.tm_mon + 1) + "." + Convert::ToString(ltm.tm_year + 1900);
+	}
+	Employee(String^ name, String^ code, String^ tIn, String^ dIn)
+	{
+		login = name;
+		accessCode = code;
+		timeIn = tIn;
+		dataIn = dIn;
 	}
 	/*Вычисялет время прекращения работы*/
 	void getTimeOut()
@@ -49,7 +56,7 @@ public:
 	String^ coutAccessCode() { return accessCode; };
 	String^ coutLogin() { return login; }
 	String^ coutTimeIn() { return timeIn; }
-	String^ coutDataIn() { return DataIn; }
+	String^ coutDataIn() { return dataIn; }
 	String^ coutTimeOut() { return timeOut; }
 };
 /*Класс таблиц в БД*/
@@ -57,17 +64,17 @@ ref class Table
 {
 private:
 	String^ tableName; //Имя таблицы
-	String^ securityCode; //Код доступа
+	String^ accessCode; //Код доступа
 
 public:
 	/*Конструктор*/
 	Table(String^ num, String^ text)
 	{
-		securityCode = num;
+		accessCode = num;
 		tableName = text;
 	}
 	/*Функция возвращает приватное поле securiteCode*/
-	String^ coutSecurityCode() { return securityCode; }
+	String^ coutAccessCode() { return accessCode; }
 	String^ coutTableName() { return tableName; }
 	/*Функция формирует SQL запрос на таблицу для БД*/
 	String^ getQueryForTable() 
