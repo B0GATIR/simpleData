@@ -49,7 +49,7 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 					+ employee->coutLogin() + "', '" + employee->coutAccessCode() + "', '"
 					+ employee->coutTimeIn() + "', '" + employee->coutTimeOut() + "', '" 
 					+ employee->coutDataIn() + "')", false);
-				
+				/*Заполняем статический класс авторизованного пользователя*/
 				User user;
 				user.login = employee->coutLogin();
 				user.accessCode = employee->coutAccessCode();
