@@ -142,6 +142,7 @@ System::Void simpleData::appForm::bNewRow_Click(System::Object^ sender, System::
 	};
 	query = query->Remove(query->Length - 1);
 	query += ")";
+	MessageBox::Show(query);
 	/*Отправка запроса БД на добавление новой строки*/
 	workData->doRequest(query, false);
 	/*Сообщение оь успешном добавлении новой строки*/
@@ -181,12 +182,12 @@ System::Void simpleData::appForm::bRowUpdate_Click(System::Object^ sender, Syste
 	int j = 0;
 	for each (auto % i in data)
 	{
-		query += j == 0 ? ""
-			: dataGridView1->Columns[j]->HeaderText + "= '" + i + "', ";
+		query += j == 0 ? "" : dataGridView1->Columns[j]->HeaderText + "= '" + i + "', ";
 		j++;
 	};
 	query = query->Remove(query->Length - 2);
 	query += " WHERE Counter = " + (index + 1);
+	MessageBox::Show(query);
 	/*Отправка запроса БД на изменеие строки*/
 	workData->doRequest(query, false);
 	/*Сообщение об успешном изменении строки*/
@@ -196,5 +197,17 @@ System::Void simpleData::appForm::bRowUpdate_Click(System::Object^ sender, Syste
 
 System::Void simpleData::appForm::bDeleteRow_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	/*Объявление экземпляра класса авторизированного пользователя*/
+	User user;
+	/*Индекс удаляемого столбца на холсте dataGridView1*/
+	int index = dataGridView1->CurrentRow->Index;
+	/*Создал объект класса базы данных*/
+	Database^ workData = gcnew Database("workData");
+	/*Формирование запроса на удаление строки в таблице*/
+	String^ query = "DELETE FROM [" + user.editTable + "] WHERE Counter = " + (index + 1);
+	/*Отправка запроса БД на удаление строки*/
+	workData->doRequest(query, false);
+	/*Сообщение об успешном удалении строки*/
+	MessageBox::Show("Selected row was sucsessfully deleted!", "Message");
 	return System::Void();
 }
