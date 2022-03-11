@@ -8,12 +8,22 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Data::OleDb;
 using namespace cliext;
+
+/*Авторизованный пользователь*/
+/*Структура возможностей пользователя*/
+ref struct Actions
+{
+	static bool edit;
+	static bool write;
+	static bool del;
+};
 /*Статический класс авторизованного пользователя*/
 static ref class User
 {
 public:
 	static String^ login;
 	static String^ accessCode;
+	static Actions^ actions;
 };
 /*Класс сотрудника, работающего с приложением*/
 ref class Employee
@@ -125,7 +135,7 @@ public:
 			OleDbDataReader^ dbReader = dbCommand->ExecuteReader();
 			if (dbReader->HasRows == false)
 			{
-				MessageBox::Show("Error!");
+				MessageBox::Show("Error!", "Table has no rows!");
 			}
 			return dbReader;
 		}
@@ -133,12 +143,12 @@ public:
 		{
 			if (dbCommand->ExecuteNonQuery() != 1)
 			{
-				MessageBox::Show("Error!");
+				MessageBox::Show("Error!", "Database doesn`t avalibale!");
 				dbConect->Close();
 			}
 		}
 	};
-	/*"Устарело!" Функция выводит массив экземпляров класса Table*/
+	/*Функция выводит массив экземпляров класса Table*/
 	list<Table^> coutTablesFromRequest()
 	{
 		return tables;
@@ -165,7 +175,7 @@ public:
 		}
 		else
 		{
-			MessageBox::Show("Error!");
+			MessageBox::Show("Error!", "This href doesn`t exist!");
 		}
 		/*
 		Заполнение массива таблиц согласно ответу, полученному от БД

@@ -28,8 +28,9 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 {
 	/*Создание объект БД аутентификации*/
 	Database^ autData = gcnew Database("autData");
+	list<Table^> tablseList = autData->coutTablesFromRequest();
 	/*Создание запроса к таблице аунтетификации БД аутентификации*/
-	String^ query = autData->coutTablesFromRequest().back()->getQueryForTable();
+	String^ query = tablseList.back()->getQueryForTable();
 	/*Данные таблицы аунтетификации для столбца логинов*/
 	OleDbDataReader^ autTabel = autData->doRequest(query, true);
 	bool rLogin = false;
@@ -53,19 +54,45 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 				User user;
 				user.login = employee->coutLogin();
 				user.accessCode = employee->coutAccessCode();
+				/*Создание запроса к таблице возможных действий БД аутентификации*/
+				query = tablseList.front()->getQueryForTable();
+				/*Данные таблицы возможных действий для столбца логинов*/
+				autTabel = autData->doRequest(query, true);
 
+				bool isRollCurrect = false;
+				while (autTabel->Read())
+				{
+					/*
+					Нахождение роли согласно таблице возможных действий и 
+					заполнение структуры возможных действий авторизованного 
+					пользователя согласно ей
+					*/
+					if (Convert::ToString(autTabel[0]) == Convert::ToString(user.accessCode))
+					{
+						isRollCurrect = true;
+						user.actions->write = Convert::ToBoolean(autTabel[2]);
+						user.actions->edit = Convert::ToBoolean(autTabel[3]);
+						user.actions->del = Convert::ToBoolean(autTabel[4]);
+					}
+				}
+				/*Проверка на случай назначения несуществующей роли*/
+				if (isRollCurrect == false)
+				{
+					MessageBox::Show("Error!", "This roll doesn`t exist!");
+				}
 				break;
 			}
 			else
 			{
+				/*Ошибка в случае неверного пароля пользователя*/
 				autTabel->Close();
 				MessageBox::Show("Wrong password.", "Error!");
-				tBLogin->Text = "";
 				tBPassword->Text = "";
 				return System::Void();
 			}
 		}
 	}
+	/*Ошибка в случае неверного имени пользователя*/
 	if (rLogin == false)
 	{
 		autTabel->Close();
