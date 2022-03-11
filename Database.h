@@ -8,23 +8,6 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Data::OleDb;
 using namespace cliext;
-
-/*Авторизованный пользователь*/
-/*Структура возможностей пользователя*/
-ref struct Actions
-{
-	static bool edit;
-	static bool write;
-	static bool del;
-};
-/*Статический класс авторизованного пользователя*/
-static ref class User
-{
-public:
-	static String^ login;
-	static String^ accessCode;
-	static Actions^ actions;
-};
 /*Класс сотрудника, работающего с приложением*/
 ref class Employee
 {
@@ -135,7 +118,7 @@ public:
 			OleDbDataReader^ dbReader = dbCommand->ExecuteReader();
 			if (dbReader->HasRows == false)
 			{
-				MessageBox::Show("Error!", "Table has no rows!");
+				MessageBox::Show("Table has no rows!", "Error!", );
 			}
 			return dbReader;
 		}
@@ -143,7 +126,7 @@ public:
 		{
 			if (dbCommand->ExecuteNonQuery() != 1)
 			{
-				MessageBox::Show("Error!", "Database doesn`t avalibale!");
+				MessageBox::Show("Database doesn`t avalibale!", "Error!");
 				dbConect->Close();
 			}
 		}
@@ -186,4 +169,21 @@ public:
 		getTablesFromRequest(dbTables);
 		dbTables->Close();
 	};
+};
+/*Авторизованный пользователь*/
+/*Структура возможностей пользователя*/
+ref struct Actions
+{
+	static bool edit; //Редактирвоание
+	static bool write; //Добавление новых строк
+	static bool del; //Удаление существующих строк
+};
+/*Статический класс авторизованного пользователя*/
+static ref class User
+{
+public:
+	static String^ login; //Логин
+	static String^ accessCode; //Код доступа
+	static Actions^ actions; //Структура хранит список возможных или нет дейсвий
+	static String^ editTable; //Таблица, с которой на данный момент работает пользователь
 };

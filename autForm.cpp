@@ -80,7 +80,9 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 				{
 					MessageBox::Show("Error!", "This roll doesn`t exist!");
 				}
-				break;
+				autTabel->Close();
+				this->Close();
+				return System::Void();
 			}
 			else
 			{
@@ -101,8 +103,5 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 		tBPassword->Text = "";
 		return System::Void();
 	}
-	autTabel->Close();
-
-	this->Close();
 	return System::Void();
 }
