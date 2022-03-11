@@ -118,7 +118,7 @@ public:
 			OleDbDataReader^ dbReader = dbCommand->ExecuteReader();
 			if (dbReader->HasRows == false)
 			{
-				MessageBox::Show("Table has no rows!", "Error!", );
+				MessageBox::Show("Table has no rows!", "Error!");
 			}
 			return dbReader;
 		}
@@ -126,7 +126,7 @@ public:
 		{
 			if (dbCommand->ExecuteNonQuery() != 1)
 			{
-				MessageBox::Show("Database doesn`t avalibale!", "Error!");
+				MessageBox::Show("Too many rows was created!", "Error!");
 				dbConect->Close();
 			}
 		}

@@ -68,7 +68,7 @@ System::Void simpleData::appForm::bDownload_Click(System::Object^ sender, System
 			/*Проверка доступности уискомой таблицы пользователю*/
 			if (Convert::ToInt32(user.accessCode) >= Convert::ToInt32(i->coutAccessCode()))
 			{
-				/*Обозначаем, с какой таблице йработает пользователь*/
+				/*Обозначаем, с какой таблицей работает пользователь*/
 				user.editTable = i->coutTableName();
 				/*В случае нахождения нужной таблицы создаётся запроса к таблице БД рабочей*/
 				String^ query = i->getQueryForTable();
@@ -144,11 +144,53 @@ System::Void simpleData::appForm::bNewRow_Click(System::Object^ sender, System::
 	query += ")";
 	/*Отправка запроса БД на добавление новой строки*/
 	workData->doRequest(query, false);
+	/*Сообщение оь успешном добавлении новой строки*/
+	MessageBox::Show("New row was sucsessfully created!", "Message");
 	return System::Void();
 }
 
 System::Void simpleData::appForm::bRowUpdate_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	/*Объявление экземпляра класса авторизированного пользователя*/
+	User user;
+	/*Индекс изменяемого столбца на холсте dataGridView1*/
+	int index = dataGridView1->CurrentRow->Index;
+	/*Массив значений столбцов*/
+	list<String^> data;
+	/*Цикл заполняет списко data значениями столбцов*/
+	int i = 0;
+	while (i < dataGridView1->ColumnCount)
+	{
+		/*Проверка на заполнение всех таблиц*/
+		if (dataGridView1->Rows[index]->Cells[i]->Value == nullptr)
+		{
+			MessageBox::Show("Not all cells are filled!", "Error!");
+			return System::Void();
+		}
+		else
+		{
+			data.push_back(dataGridView1->Rows[index]->Cells[i]->Value->ToString());
+		}
+		i++;
+	}
+	/*Создал объект класса базы данных*/
+	Database^ workData = gcnew Database("workData");
+	/*Формирование запроса на изменение строки в таблице*/
+	String^ query = "UPDATE [" + user.editTable + "] SET ";
+	/*Заполнение значений каждого столбца*/
+	int j = 0;
+	for each (auto % i in data)
+	{
+		query += j == 0 ? ""
+			: dataGridView1->Columns[j]->HeaderText + "= '" + i + "', ";
+		j++;
+	};
+	query = query->Remove(query->Length - 2);
+	query += " WHERE Counter = " + (index + 1);
+	/*Отправка запроса БД на изменеие строки*/
+	workData->doRequest(query, false);
+	/*Сообщение об успешном изменении строки*/
+	MessageBox::Show("Selected row was sucsessfully updated!", "Message");
 	return System::Void();
 }
 

@@ -46,7 +46,7 @@ System::Void simpleData::autForm::autBtn_Click(System::Object^ sender, System::E
 				/*Создание экземпляр класса Базы данных*/
 				Database^ workData = gcnew Database("workData");
 				/*Создание запроса к таблице учета входа в рабочей БД*/
-				workData->doRequest("INSERT INTO [Workers table] VALUES ('"
+				workData->doRequest("INSERT INTO [Workers table] (Login, accessCode, timeIn, timeOut, DataIn) VALUES ('"
 					+ employee->coutLogin() + "', '" + employee->coutAccessCode() + "', '"
 					+ employee->coutTimeIn() + "', '" + employee->coutTimeOut() + "', '" 
 					+ employee->coutDataIn() + "')", false);
