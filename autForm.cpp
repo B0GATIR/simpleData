@@ -19,7 +19,6 @@ int mainAut(array<String^>^ arg)
 	Application::Run(% aut);
 	Application::Run(% api);
 
-	int a;
 	return 0;
 }
 

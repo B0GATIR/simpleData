@@ -40,9 +40,11 @@ namespace simpleData {
 	private: System::Windows::Forms::Button^ bRowUpdate;
 	private: System::Windows::Forms::Button^ bNewRow;
 	private: System::Windows::Forms::Button^ bDownload;
-	private: System::Windows::Forms::GroupBox^ groupBoxTables;
-	private: System::Windows::Forms::Label^ lblEnableTables;
-	private: System::Windows::Forms::TextBox^ tbTableName;
+	private: System::Windows::Forms::ComboBox^ cbTableName;
+
+
+
+
 
 
 
@@ -68,12 +70,9 @@ namespace simpleData {
 			this->bRowUpdate = (gcnew System::Windows::Forms::Button());
 			this->bNewRow = (gcnew System::Windows::Forms::Button());
 			this->bDownload = (gcnew System::Windows::Forms::Button());
-			this->groupBoxTables = (gcnew System::Windows::Forms::GroupBox());
-			this->lblEnableTables = (gcnew System::Windows::Forms::Label());
-			this->tbTableName = (gcnew System::Windows::Forms::TextBox());
+			this->cbTableName = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->groupBoxActions->SuspendLayout();
-			this->groupBoxTables->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// dataGridView1
@@ -88,8 +87,7 @@ namespace simpleData {
 			// 
 			// groupBoxActions
 			// 
-			this->groupBoxActions->Controls->Add(this->tbTableName);
-			this->groupBoxActions->Controls->Add(this->groupBoxTables);
+			this->groupBoxActions->Controls->Add(this->cbTableName);
 			this->groupBoxActions->Controls->Add(this->bDeleteRow);
 			this->groupBoxActions->Controls->Add(this->bRowUpdate);
 			this->groupBoxActions->Controls->Add(this->bNewRow);
@@ -147,30 +145,13 @@ namespace simpleData {
 			this->bDownload->UseVisualStyleBackColor = true;
 			this->bDownload->Click += gcnew System::EventHandler(this, &appForm::bDownload_Click);
 			// 
-			// groupBoxTables
+			// cbTableName
 			// 
-			this->groupBoxTables->Controls->Add(this->lblEnableTables);
-			this->groupBoxTables->Location = System::Drawing::Point(16, 92);
-			this->groupBoxTables->Name = L"groupBoxTables";
-			this->groupBoxTables->Size = System::Drawing::Size(162, 304);
-			this->groupBoxTables->TabIndex = 4;
-			this->groupBoxTables->TabStop = false;
-			this->groupBoxTables->Text = L"Список таблиц";
-			// 
-			// lblEnableTables
-			// 
-			this->lblEnableTables->AutoSize = true;
-			this->lblEnableTables->Location = System::Drawing::Point(7, 20);
-			this->lblEnableTables->Name = L"lblEnableTables";
-			this->lblEnableTables->Size = System::Drawing::Size(0, 13);
-			this->lblEnableTables->TabIndex = 0;
-			// 
-			// tbTableName
-			// 
-			this->tbTableName->Location = System::Drawing::Point(16, 66);
-			this->tbTableName->Name = L"tbTableName";
-			this->tbTableName->Size = System::Drawing::Size(162, 20);
-			this->tbTableName->TabIndex = 5;
+			this->cbTableName->FormattingEnabled = true;
+			this->cbTableName->Location = System::Drawing::Point(16, 66);
+			this->cbTableName->Name = L"cbTableName";
+			this->cbTableName->Size = System::Drawing::Size(162, 21);
+			this->cbTableName->TabIndex = 4;
 			// 
 			// appForm
 			// 
@@ -180,13 +161,10 @@ namespace simpleData {
 			this->Controls->Add(this->groupBoxActions);
 			this->Controls->Add(this->dataGridView1);
 			this->Name = L"appForm";
-			this->Text = L"appForm";
+			this->Text = L"Учет командировочных расходов";
 			this->Load += gcnew System::EventHandler(this, &appForm::appForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->groupBoxActions->ResumeLayout(false);
-			this->groupBoxActions->PerformLayout();
-			this->groupBoxTables->ResumeLayout(false);
-			this->groupBoxTables->PerformLayout();
 			this->ResumeLayout(false);
 
 		}

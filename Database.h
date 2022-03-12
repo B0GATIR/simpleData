@@ -126,7 +126,7 @@ public:
 		{
 			if (dbCommand->ExecuteNonQuery() != 1)
 			{
-				MessageBox::Show("Too many rows was created!", "Error!");
+				MessageBox::Show("Too many rows was created or this didn`t exsist!", "Error!");
 				dbConect->Close();
 			}
 		}

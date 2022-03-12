@@ -1,3 +1,4 @@
+#include "newRowConstructorForm.h"
 #include "appForm.h"
 #include "autForm.h"
 #include "Database.h"
@@ -13,28 +14,54 @@ int mainApp(array<String^>^ arg)
 
 	return 0;
 }
-
+/*Функция совершает проверку значенйи столбцов и заносит их в список*/
+list<String^> getDataValues(System::Windows::Forms::DataGridView^ dataGridView1)
+{
+	list<String^> values;
+	/*Цикл заполняет список data значениями столбцов*/
+	int i = 0;
+	while (i < dataGridView1->ColumnCount)
+	{
+		/*Проверка на заполнение всех таблиц*/
+		if (dataGridView1->Rows[dataGridView1->SelectedCells[0]->RowIndex]->Cells[i]->Value == nullptr)
+		{
+			MessageBox::Show("Not all cells are filled!", "Error!");
+			return values;
+		}
+		else
+		{
+			values.push_back(dataGridView1->Rows[dataGridView1->SelectedCells[0]->RowIndex]->Cells[i]->Value->ToString());
+		}
+		i++;
+	}
+	return values;
+}
 
 System::Void simpleData::appForm::appForm_Load(System::Object^ sender, System::EventArgs^ e)
 {
+	/*Обратиллся к статичесокму классу авторизованного пользователя*/
+	User user;
+	/*Проверка, была ли совершена авторизация*/
+	if (user.login == nullptr)
+	{
+		this->Close();
+	}
 	/*Создал объект класса базы данных*/
 	Database^ workData = gcnew Database("workData");
 	/*Получил список таблиц рабочей базы данных*/
 	list<Table^> tablseList = workData->coutTablesFromRequest();
-	/*Обратиллся к статичесокму классу авторизованного пользователя*/
-	User user;
 	/*Цикл проверяет достуепные авторизованному пользователю таблицы базы данных*/
 	for each (auto % i in tablseList)
 	{
 		if (Convert::ToInt32(user.accessCode) >= Convert::ToInt32(i->coutAccessCode()))
 		{
-			lblEnableTables->Text += i->coutTableName() + "\n";
+			cbTableName->Items->Add(i->coutTableName());
 		}
 	};
 	/*
-	Следующие три условия устанавливают значение доступа авторизованного 
-	пользователя к той или иной кнопке согласно данным в структуре action в
-	объекте статического класса user
+	Следующие четыре условия устанавливают значение доступа авторизованного 
+	пользователя к кнопкам и полям таблиц согласно данным в структуре action в
+	объекте статического класса user и accessCode
 	*/
 	if (user.actions->edit == false)
 	{
@@ -47,6 +74,10 @@ System::Void simpleData::appForm::appForm_Load(System::Object^ sender, System::E
 	if (user.actions->del == false)
 	{
 		bDeleteRow->Enabled = false;
+	}
+	if (Convert::ToInt32(user.accessCode) <= 21)
+	{
+		dataGridView1->ReadOnly = true;
 	}
 	return System::Void();
 }
@@ -63,9 +94,9 @@ System::Void simpleData::appForm::bDownload_Click(System::Object^ sender, System
 	/*Цикл совершает поиск таблицы указанной в поле ввода tbTableName*/
 	for each (auto % i in tablseList)
 	{
-		if (Convert::ToString(tbTableName->Text) == Convert::ToString(i->coutTableName()))
+		if (Convert::ToString(cbTableName->Text) == Convert::ToString(i->coutTableName()))
 		{
-			/*Проверка доступности уискомой таблицы пользователю*/
+			/*Проверка доступности искомой таблицы пользователю*/
 			if (Convert::ToInt32(user.accessCode) >= Convert::ToInt32(i->coutAccessCode()))
 			{
 				/*Обозначаем, с какой таблицей работает пользователь*/
@@ -111,103 +142,112 @@ System::Void simpleData::appForm::bNewRow_Click(System::Object^ sender, System::
 {
 	/*Объявление экземпляра класса авторизированного пользователя*/
 	User user;
-	/*Индекс нового столбца на холсте dataGridView1*/
-	int index = dataGridView1->CurrentRow->Index;
-	/*Массив значений столбцов*/
-	list<String^> data;
-	/*Цикл заполняет списко data значениями столбцов*/
-	int i = 0;
-	while (i < dataGridView1->ColumnCount)
+	if (dataGridView1->ColumnCount != 0)
 	{
-		/*Проверка на заполнение всех таблиц*/
-		if (dataGridView1->Rows[index]->Cells[i]->Value == nullptr)
+		if (Convert::ToInt32(user.accessCode) <= 31
+			&& Convert::ToInt32(user.accessCode) > 11)
 		{
-			MessageBox::Show("Not all cells are filled!", "Error!");
+			newRowConstructorForm^ constructor = gcnew newRowConstructorForm;
+			constructor->Show();
+		}
+		else
+		{
+			/*Индекс нового столбца на холсте dataGridView1*/
+			int index = Convert::ToInt32(dataGridView1->Rows[dataGridView1->SelectedCells[0]->RowIndex]->Cells[0]->Value);
+			/*Массив значений столбцов*/
+			list<String^> data = getDataValues(dataGridView1);
+			/*Проверка на случай если были заполнены не все строки*/
+			if (data.size() == 0)
+			{
+				return System::Void();
+			}
+			/*Создал объект класса базы данных*/
+			Database^ workData = gcnew Database("workData");
+			/*Формирование запроса на добавление новой строки в таблицу*/
+			String^ query = "INSERT INTO [" + user.editTable + "] VALUES(";
+			/*Заполнение значений каждого столбца*/
+			for each (auto % i in data)
+			{
+				query += "'" + i + "',";
+			};
+			query = query->Remove(query->Length - 1);
+			query += ")";
+			/*Отправка запроса БД на добавление новой строки*/
+			workData->doRequest(query, false);
+			/*Сообщение оь успешном добавлении новой строки*/
+			MessageBox::Show("New row was sucsessfully created!", "Message");
 			return System::Void();
 		}
-		else 
-		{
-			data.push_back(dataGridView1->Rows[index]->Cells[i]->Value->ToString());
-		}
-		i++;
 	}
-	/*Создал объект класса базы данных*/
-	Database^ workData = gcnew Database("workData");
-	/*Формирование запроса на добавление новой строки в таблицу*/
-	String^ query = "INSERT INTO [" + user.editTable + "] VALUES(";
-	/*Заполнение значений каждого столбца*/
-	for each (auto % i in data)
+	else
 	{
-		query += "'" + i + "',";
-	};
-	query = query->Remove(query->Length - 1);
-	query += ")";
-	MessageBox::Show(query);
-	/*Отправка запроса БД на добавление новой строки*/
-	workData->doRequest(query, false);
-	/*Сообщение оь успешном добавлении новой строки*/
-	MessageBox::Show("New row was sucsessfully created!", "Message");
-	return System::Void();
+		MessageBox::Show("Choose the table!", "Message");
+		return System::Void();
+	}
 }
 
 System::Void simpleData::appForm::bRowUpdate_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	/*Объявление экземпляра класса авторизированного пользователя*/
 	User user;
-	/*Индекс изменяемого столбца на холсте dataGridView1*/
-	int index = dataGridView1->CurrentRow->Index;
-	/*Массив значений столбцов*/
-	list<String^> data;
-	/*Цикл заполняет списко data значениями столбцов*/
-	int i = 0;
-	while (i < dataGridView1->ColumnCount)
+	if (dataGridView1->ColumnCount != 0)
 	{
-		/*Проверка на заполнение всех таблиц*/
-		if (dataGridView1->Rows[index]->Cells[i]->Value == nullptr)
+		/*Индекс изменяемого столбца на холсте dataGridView1*/
+		int index = Convert::ToInt32(dataGridView1->Rows[dataGridView1->SelectedCells[0]->RowIndex]->Cells[0]->Value);
+		/*Массив значений столбцов*/
+		list<String^> data = getDataValues(dataGridView1);
+		/*Проверка на случай если были заполнены не все строки*/
+		if (data.size() == 0)
 		{
-			MessageBox::Show("Not all cells are filled!", "Error!");
 			return System::Void();
 		}
-		else
+		/*Создал объект класса базы данных*/
+		Database^ workData = gcnew Database("workData");
+		/*Формирование запроса на изменение строки в таблице*/
+		String^ query = "UPDATE [" + user.editTable + "] SET ";
+		/*Заполнение значений каждого столбца*/
+		int j = 0;
+		for each (auto % i in data)
 		{
-			data.push_back(dataGridView1->Rows[index]->Cells[i]->Value->ToString());
-		}
-		i++;
+			query += j == 0 ? "" : dataGridView1->Columns[j]->HeaderText + "= '" + i + "', ";
+			j++;
+		};
+		query = query->Remove(query->Length - 2);
+		query += " WHERE Counter = " + index;
+		/*Отправка запроса БД на изменеие строки*/
+		workData->doRequest(query, false);
+		/*Сообщение об успешном изменении строки*/
+		MessageBox::Show("Selected row was sucsessfully updated!", "Message");
+		return System::Void();
 	}
-	/*Создал объект класса базы данных*/
-	Database^ workData = gcnew Database("workData");
-	/*Формирование запроса на изменение строки в таблице*/
-	String^ query = "UPDATE [" + user.editTable + "] SET ";
-	/*Заполнение значений каждого столбца*/
-	int j = 0;
-	for each (auto % i in data)
+	else
 	{
-		query += j == 0 ? "" : dataGridView1->Columns[j]->HeaderText + "= '" + i + "', ";
-		j++;
-	};
-	query = query->Remove(query->Length - 2);
-	query += " WHERE Counter = " + (index + 1);
-	MessageBox::Show(query);
-	/*Отправка запроса БД на изменеие строки*/
-	workData->doRequest(query, false);
-	/*Сообщение об успешном изменении строки*/
-	MessageBox::Show("Selected row was sucsessfully updated!", "Message");
-	return System::Void();
+		MessageBox::Show("Choose the table!", "Message");
+		return System::Void();
+	}
 }
 
 System::Void simpleData::appForm::bDeleteRow_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	/*Объявление экземпляра класса авторизированного пользователя*/
 	User user;
-	/*Индекс удаляемого столбца на холсте dataGridView1*/
-	int index = dataGridView1->CurrentRow->Index;
-	/*Создал объект класса базы данных*/
-	Database^ workData = gcnew Database("workData");
-	/*Формирование запроса на удаление строки в таблице*/
-	String^ query = "DELETE FROM [" + user.editTable + "] WHERE Counter = " + (index + 1);
-	/*Отправка запроса БД на удаление строки*/
-	workData->doRequest(query, false);
-	/*Сообщение об успешном удалении строки*/
-	MessageBox::Show("Selected row was sucsessfully deleted!", "Message");
-	return System::Void();
+	if (dataGridView1->ColumnCount != 0)
+	{
+		/*Индекс удаляемого столбца на холсте dataGridView1*/
+		int index = Convert::ToInt32(dataGridView1->Rows[dataGridView1->SelectedCells[0]->RowIndex]->Cells[0]->Value);
+		/*Создал объект класса базы данных*/
+		Database^ workData = gcnew Database("workData");
+		/*Формирование запроса на удаление строки в таблице*/
+		String^ query = "DELETE FROM [" + user.editTable + "] WHERE Counter = " + index;
+		/*Отправка запроса БД на удаление строки*/
+		workData->doRequest(query, false);
+		/*Сообщение об успешном удалении строки*/
+		MessageBox::Show("Selected row was sucsessfully deleted!", "Message");
+		return System::Void();
+	}
+	else
+	{
+		MessageBox::Show("Choose the table!", "Message");
+		return System::Void();
+	}
 }
