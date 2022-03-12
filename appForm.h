@@ -64,13 +64,14 @@ namespace simpleData {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(appForm::typeid));
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->groupBoxActions = (gcnew System::Windows::Forms::GroupBox());
+			this->cbTableName = (gcnew System::Windows::Forms::ComboBox());
 			this->bDeleteRow = (gcnew System::Windows::Forms::Button());
 			this->bRowUpdate = (gcnew System::Windows::Forms::Button());
 			this->bNewRow = (gcnew System::Windows::Forms::Button());
 			this->bDownload = (gcnew System::Windows::Forms::Button());
-			this->cbTableName = (gcnew System::Windows::Forms::ComboBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->groupBoxActions->SuspendLayout();
 			this->SuspendLayout();
@@ -100,6 +101,14 @@ namespace simpleData {
 			this->groupBoxActions->TabIndex = 1;
 			this->groupBoxActions->TabStop = false;
 			this->groupBoxActions->Text = L"Действия";
+			// 
+			// cbTableName
+			// 
+			this->cbTableName->FormattingEnabled = true;
+			this->cbTableName->Location = System::Drawing::Point(16, 66);
+			this->cbTableName->Name = L"cbTableName";
+			this->cbTableName->Size = System::Drawing::Size(162, 21);
+			this->cbTableName->TabIndex = 4;
 			// 
 			// bDeleteRow
 			// 
@@ -145,21 +154,15 @@ namespace simpleData {
 			this->bDownload->UseVisualStyleBackColor = true;
 			this->bDownload->Click += gcnew System::EventHandler(this, &appForm::bDownload_Click);
 			// 
-			// cbTableName
-			// 
-			this->cbTableName->FormattingEnabled = true;
-			this->cbTableName->Location = System::Drawing::Point(16, 66);
-			this->cbTableName->Name = L"cbTableName";
-			this->cbTableName->Size = System::Drawing::Size(162, 21);
-			this->cbTableName->TabIndex = 4;
-			// 
 			// appForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackColor = System::Drawing::SystemColors::Control;
 			this->ClientSize = System::Drawing::Size(812, 567);
 			this->Controls->Add(this->groupBoxActions);
 			this->Controls->Add(this->dataGridView1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"appForm";
 			this->Text = L"Учет командировочных расходов";
 			this->Load += gcnew System::EventHandler(this, &appForm::appForm_Load);

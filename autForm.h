@@ -55,6 +55,7 @@ namespace simpleData {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(autForm::typeid));
 			this->autBtn = (gcnew System::Windows::Forms::Button());
 			this->tBPassword = (gcnew System::Windows::Forms::TextBox());
 			this->tBLogin = (gcnew System::Windows::Forms::TextBox());
@@ -93,6 +94,7 @@ namespace simpleData {
 			this->Controls->Add(this->tBLogin);
 			this->Controls->Add(this->tBPassword);
 			this->Controls->Add(this->autBtn);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"autForm";
 			this->Text = L"Авторизация";
 			this->ResumeLayout(false);

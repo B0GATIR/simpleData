@@ -82,6 +82,7 @@ namespace simpleData {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(newRowConstructorForm::typeid));
 			this->lDays = (gcnew System::Windows::Forms::Label());
 			this->tbDays = (gcnew System::Windows::Forms::TextBox());
 			this->lName = (gcnew System::Windows::Forms::Label());
@@ -260,6 +261,7 @@ namespace simpleData {
 			this->Controls->Add(this->lName);
 			this->Controls->Add(this->tbDays);
 			this->Controls->Add(this->lDays);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"newRowConstructorForm";
 			this->Text = L"Конструктор новой командировки";
 			this->Load += gcnew System::EventHandler(this, &newRowConstructorForm::newRowConstructorForm_Load);
