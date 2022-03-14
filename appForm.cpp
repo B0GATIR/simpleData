@@ -82,6 +82,24 @@ System::Void simpleData::appForm::appForm_Load(System::Object^ sender, System::E
 	return System::Void();
 }
 
+System::Void simpleData::appForm::onClose(System::Object^ sender, System::Windows::Forms::FormClosedEventArgs^ e)
+{
+	/*Создал объект класса базы данных*/
+	Database^ workData = gcnew Database("workData");
+	/*Вычисялет время выхода сотрудника из программы*/
+	struct tm ltm;
+	time_t now = time(0);
+	localtime_s(&ltm, &now);
+	String^ min = ltm.tm_min < 10 ? "0" + ltm.tm_min : Convert::ToString(ltm.tm_min);
+	String^ hour = ltm.tm_hour < 10 ? "0" + ltm.tm_hour : Convert::ToString(ltm.tm_hour);
+	String^ timeOut = hour + ":" + min;
+	/*Формирование запроса на изменение строки в таблице*/
+	String^ query = "UPDATE [Workers table] SET timeOut = '" + timeOut + "' WHERE Counter = (SELECT MAX(Counter) FROM[Workers table])";
+	/*Отправка запроса БД на изменеие строки*/
+	workData->doRequest(query, false);
+	return System::Void();
+}
+
 System::Void simpleData::appForm::bDownload_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	/*Объявление экземпляра класса авторизированного пользователя*/

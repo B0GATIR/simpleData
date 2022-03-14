@@ -165,6 +165,7 @@ namespace simpleData {
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"appForm";
 			this->Text = L"Учет командировочных расходов";
+			this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &appForm::onClose);
 			this->Load += gcnew System::EventHandler(this, &appForm::appForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->groupBoxActions->ResumeLayout(false);
@@ -177,5 +178,6 @@ namespace simpleData {
 	private: System::Void bRowUpdate_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void bDeleteRow_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void appForm_Load(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void onClose(System::Object^ sender, System::Windows::Forms::FormClosedEventArgs^ e);
 };
 }
