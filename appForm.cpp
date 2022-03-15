@@ -162,8 +162,7 @@ System::Void simpleData::appForm::bNewRow_Click(System::Object^ sender, System::
 	User user;
 	if (dataGridView1->ColumnCount != 0)
 	{
-		if (Convert::ToInt32(user.accessCode) <= 31
-			&& Convert::ToInt32(user.accessCode) > 11)
+		if (Convert::ToInt32(user.accessCode) == 21)
 		{
 			newRowConstructorForm^ constructor = gcnew newRowConstructorForm;
 			constructor->Show();

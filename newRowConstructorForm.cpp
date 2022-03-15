@@ -114,7 +114,6 @@ System::Void simpleData::newRowConstructorForm::bOk_Click(System::Object^ sender
 			+ tbDays->Text + "', '" + cbNames->Text + "', '" + cbOrganizations->Text + "', '"
 			+ tbHowManyDays->Text + "', '" + tbMoneyInDay->Text + "', '" + tbTicketsCost->Text + "', '"
 			+ lRes->Text + "')";
-		MessageBox::Show(query);
 		/*Отправка запроса БД на добавление новой строки*/
 		workData->doRequest(query, false);
 		/*Сообщение об успешном добавлении новой строки*/
